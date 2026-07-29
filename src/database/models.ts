@@ -112,8 +112,8 @@ export class RefreshToken extends UuidModel<RefreshToken> {
   indexes: [{ fields: ['organization_id', 'status'] }],
 })
 export class Campaign extends UuidModel<Campaign> {
-  @ForeignKey(() => Organization) @AllowNull(false) @Column(DataType.UUID)
-  declare organizationId: string;
+  @ForeignKey(() => Organization) @Column(DataType.UUID)
+  declare organizationId: string | null;
   @BelongsTo(() => Organization) declare organization?: Organization;
   @AllowNull(false) @Column(DataType.STRING(180)) declare name: string;
   @Column(DataType.TEXT) declare description: string | null;
@@ -131,8 +131,8 @@ export class Campaign extends UuidModel<Campaign> {
   indexes: [{ fields: ['organization_id', 'campaign_id', 'status'] }],
 })
 export class Activity extends UuidModel<Activity> {
-  @ForeignKey(() => Organization) @AllowNull(false) @Column(DataType.UUID)
-  declare organizationId: string;
+  @ForeignKey(() => Organization) @Column(DataType.UUID)
+  declare organizationId: string | null;
   @ForeignKey(() => Campaign) @AllowNull(false) @Column(DataType.UUID) declare campaignId: string;
   @BelongsTo(() => Campaign) declare campaign?: Campaign;
   @AllowNull(false) @Column(DataType.STRING(180)) declare name: string;
@@ -260,7 +260,7 @@ export class Evidence extends UuidModel<Evidence> {
 export class ValidationEvent extends UuidCreatedModel<ValidationEvent> {
   @ForeignKey(() => Submission) @AllowNull(false) @Column(DataType.UUID)
   declare submissionId: string;
-  @ForeignKey(() => User) @AllowNull(false) @Column(DataType.UUID) declare validatorId: string;
+  @ForeignKey(() => User) @AllowNull(false) @Column(DataType.UUID) declare adminId: string;
   @AllowNull(false) @Column(DataType.STRING(30)) declare fromStatus: SubmissionStatus;
   @AllowNull(false) @Column(DataType.STRING(30)) declare toStatus: SubmissionStatus;
   @AllowNull(false) @Column(DataType.DECIMAL(12, 2)) declare pointsBefore: string;
@@ -274,8 +274,8 @@ export class ValidationEvent extends UuidCreatedModel<ValidationEvent> {
   indexes: [{ fields: ['organization_id', 'campaign_id', 'starts_at', 'ends_at'] }],
 })
 export class Goal extends UuidModel<Goal> {
-  @ForeignKey(() => Organization) @AllowNull(false) @Column(DataType.UUID)
-  declare organizationId: string;
+  @ForeignKey(() => Organization) @Column(DataType.UUID)
+  declare organizationId: string | null;
   @ForeignKey(() => Campaign) @AllowNull(false) @Column(DataType.UUID) declare campaignId: string;
   @BelongsTo(() => Campaign) declare campaign?: Campaign;
   @ForeignKey(() => Activity) @Column(DataType.UUID) declare activityId: string | null;

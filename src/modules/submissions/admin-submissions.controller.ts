@@ -10,25 +10,33 @@ import { EvidencesService } from '../evidences/evidences.service';
 import { ValidateSubmissionDto } from './submissions.dto';
 import { SubmissionsService } from './submissions.service';
 
-@ApiTags('platform-validations')
+@ApiTags('admin-submissions')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(PlatformRole.VALIDATOR)
-@Controller('validation/submissions')
-export class PlatformValidationsController {
+@Roles(PlatformRole.ADMIN)
+@Controller('admin/submissions')
+export class AdminSubmissionsController {
   constructor(
     private readonly submissions: SubmissionsService,
     private readonly evidences: EvidencesService,
   ) {}
 
   @Get()
-  findAll(@Query('status') status?: SubmissionStatus) {
-    return this.submissions.findAllForValidation(status);
+  findAll(
+    @Query('status') status?: SubmissionStatus,
+    @Query('organizationId') organizationId?: string,
+    @Query('campaignId') campaignId?: string,
+  ) {
+    return this.submissions.findAllForAdmin(
+      status,
+      organizationId,
+      campaignId,
+    );
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.submissions.findOneForValidation(id);
+    return this.submissions.findOneForAdmin(id);
   }
 
   @Post(':id/validate')
@@ -40,11 +48,21 @@ export class PlatformValidationsController {
     return this.submissions.validate(id, user.userId, input);
   }
 
+  @Post(':id/approve')
+  approve(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedPrincipal,
+  ) {
+    return this.submissions.validate(id, user.userId, {
+      status: SubmissionStatus.APPROVED,
+    });
+  }
+
   @Get(':id/evidences/:evidenceId/url')
   evidenceUrl(
     @Param('id') id: string,
     @Param('evidenceId') evidenceId: string,
   ) {
-    return this.evidences.signedUrlForValidation(id, evidenceId);
+    return this.evidences.signedUrlForAdmin(id, evidenceId);
   }
 }

@@ -102,13 +102,13 @@ describe('AuthService login and refresh rotation', () => {
     expect(save).toHaveBeenCalledTimes(2);
   });
 
-  it('registers a leader without attaching them to a team', async () => {
+  it('registers a manager without attaching them to a team', async () => {
     const transaction = {} as Transaction;
     const createdUser = {
       ...user,
       name: 'Ana',
       email: 'ana@example.com',
-      platformRole: PlatformRole.LEADER,
+      platformRole: PlatformRole.USER,
     } as User;
     const userCreate = jest.fn().mockResolvedValue(createdUser);
     const service = new AuthService(
@@ -129,7 +129,7 @@ describe('AuthService login and refresh rotation', () => {
       config,
     );
 
-    const pair = await service.registerLeader({
+    const pair = await service.registerManager({
       name: 'Ana',
       email: 'ana@example.com',
       password: '123456',
@@ -137,18 +137,18 @@ describe('AuthService login and refresh rotation', () => {
 
     expect(pair.accessToken).toBe('signed-access-token');
     expect(userCreate).toHaveBeenCalledWith(
-      expect.objectContaining({ platformRole: PlatformRole.LEADER }),
+      expect.objectContaining({ platformRole: PlatformRole.USER }),
       { transaction },
     );
   });
 
-  it('allows a leader without a membership to create their team', async () => {
+  it('allows a manager without a membership to create their team', async () => {
     const transaction = {} as Transaction;
     const createdUser = {
       ...user,
       name: 'Ana',
       email: 'ana@example.com',
-      platformRole: PlatformRole.LEADER,
+      platformRole: PlatformRole.USER,
     } as User;
     const createdMembership = {
       ...membership,

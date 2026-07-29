@@ -1,6 +1,7 @@
 @baseUrl = http://localhost:3000
 @accessToken = replace-after-login
 @refreshToken = replace-after-login
+@adminToken = replace-after-admin-login
 
 ### Health
 GET {{baseUrl}}/health
@@ -64,3 +65,15 @@ Content-Type: application/pdf
 ### Dashboard (approved, pending, total and personal progress)
 GET {{baseUrl}}/dashboard/summary
 Authorization: Bearer {{accessToken}}
+
+### Admin: progress for every team
+GET {{baseUrl}}/admin/dashboard/teams
+Authorization: Bearer {{adminToken}}
+
+### Admin: tasks from one team
+GET {{baseUrl}}/admin/submissions?organizationId=00000000-0000-4000-8000-000000000000
+Authorization: Bearer {{adminToken}}
+
+### Admin: approve a task
+POST {{baseUrl}}/admin/submissions/00000000-0000-4000-8000-000000000000/approve
+Authorization: Bearer {{adminToken}}

@@ -158,6 +158,14 @@ export class ActivityAvailabilityQueryDto {
   @ApiProperty({ example: '2026-09-20', format: 'date' })
   @Matches(/^\d{4}-\d{2}-\d{2}$/)
   actionDate!: string;
+
+  @ApiPropertyOptional({
+    format: 'uuid',
+    description: 'Required only when an ADMIN checks a specific team',
+  })
+  @IsOptional()
+  @IsUUID()
+  organizationId?: string;
 }
 
 export class ActivityAvailabilityDto {

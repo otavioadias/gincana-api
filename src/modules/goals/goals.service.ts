@@ -65,26 +65,28 @@ export class GoalsService {
     private readonly sequelize: Sequelize,
   ) {}
 
-  findAll(organizationId: string, campaignId?: string): Promise<Goal[]> {
+  findAll(campaignId?: string): Promise<Goal[]> {
     return this.goals.findAll({
-      where: { organizationId, ...(campaignId ? { campaignId } : {}) },
+      where: { organizationId: null, ...(campaignId ? { campaignId } : {}) },
       order: [['startsAt', 'DESC']],
     });
   }
 
-  async findOne(organizationId: string, id: string): Promise<Goal> {
-    const goal = await this.goals.findOne({ where: { id, organizationId } });
+  async findOne(id: string): Promise<Goal> {
+    const goal = await this.goals.findOne({
+      where: { id, organizationId: null },
+    });
     if (!goal) throw new NotFoundException('Goal not found');
     return goal;
   }
 
-  async create(organizationId: string, input: CreateGoalDto): Promise<Goal> {
-    const campaign = await this.assertCampaign(organizationId, input.campaignId);
+  async create(input: CreateGoalDto): Promise<Goal> {
+    const campaign = await this.assertCampaign(input.campaignId);
     const startsAt = dateOnly(input.startsAt);
     const endsAt = dateOnly(input.endsAt);
-    await this.validate(organizationId, campaign, input.activityId, startsAt, endsAt, input);
+    await this.validate(campaign, input.activityId, startsAt, endsAt, input);
     return this.goals.create({
-      organizationId,
+      organizationId: null,
       campaignId: input.campaignId,
       activityId: input.activityId ?? null,
       title: input.title,
@@ -101,13 +103,12 @@ export class GoalsService {
   }
 
   async update(
-    organizationId: string,
     id: string,
     input: UpdateGoalDto,
   ): Promise<Goal> {
-    const goal = await this.findOne(organizationId, id);
+    const goal = await this.findOne(id);
     const campaignId = input.campaignId ?? goal.campaignId;
-    const campaign = await this.assertCampaign(organizationId, campaignId);
+    const campaign = await this.assertCampaign(campaignId);
     const activityId =
       input.activityId === undefined ? goal.activityId : input.activityId;
     const startsAt = dateOnly(input.startsAt ?? goal.startsAt);
@@ -120,7 +121,6 @@ export class GoalsService {
       targetQuantity: input.targetQuantity ?? Number(goal.targetQuantity),
     };
     await this.validate(
-      organizationId,
       campaign,
       activityId,
       startsAt,
@@ -146,17 +146,15 @@ export class GoalsService {
     return goal;
   }
 
-  async remove(organizationId: string, id: string): Promise<void> {
-    await (await this.findOne(organizationId, id)).destroy();
+  async remove(id: string): Promise<void> {
+    await (await this.findOne(id)).destroy();
   }
 
   async createMonthlyPlan(
-    organizationId: string,
     input: CreateMonthlyPlanDto,
   ): Promise<Goal[]> {
-    const campaign = await this.assertCampaign(organizationId, input.campaignId);
+    const campaign = await this.assertCampaign(input.campaignId);
     await this.validate(
-      organizationId,
       campaign,
       input.activityId,
       campaign.startsAt,
@@ -166,7 +164,7 @@ export class GoalsService {
     return this.sequelize.transaction(async (transaction) => {
       return this.goals.bulkCreate(
         monthPeriods(campaign.startsAt, campaign.endsAt).map((period) => ({
-          organizationId,
+          organizationId: null,
           campaignId: campaign.id,
           activityId: input.activityId ?? null,
           title: `${input.titlePrefix} ${period.label}`,
@@ -189,7 +187,7 @@ export class GoalsService {
     organizationId: string,
     id: string,
   ): Promise<GoalProgressDto> {
-    const goal = await this.findOne(organizationId, id);
+    const goal = await this.findOne(id);
     const rows = await this.sequelize.query<ProgressRow>(
       `
         WITH approved AS (
@@ -288,7 +286,6 @@ export class GoalsService {
   }
 
   private async validate(
-    organizationId: string,
     campaign: Campaign,
     activityId: string | null | undefined,
     startsAt: string,
@@ -317,7 +314,7 @@ export class GoalsService {
         where: {
           id: activityId,
           campaignId: campaign.id,
-          organizationId,
+          organizationId: null,
         },
       }))
     ) {
@@ -328,11 +325,10 @@ export class GoalsService {
   }
 
   private async assertCampaign(
-    organizationId: string,
     campaignId: string,
   ): Promise<Campaign> {
     const campaign = await this.campaigns.findOne({
-      where: { id: campaignId, organizationId },
+      where: { id: campaignId, organizationId: null },
     });
     if (!campaign) {
       throw new BadRequestException(

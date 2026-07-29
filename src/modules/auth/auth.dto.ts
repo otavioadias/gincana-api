@@ -19,7 +19,7 @@ export class LoginDto {
   deviceInfo?: string;
 }
 
-export class RegisterLeaderDto {
+export class RegisterManagerDto {
   @ApiProperty({ example: 'Ana Silva' })
   @IsString()
   @MinLength(2)

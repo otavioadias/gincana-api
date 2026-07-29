@@ -106,7 +106,7 @@ export class EvidencesService {
     return { url: await this.storage.signedReadUrl(evidence.storageKey) };
   }
 
-  async signedUrlForValidation(
+  async signedUrlForAdmin(
     submissionId: string,
     evidenceId: string,
   ): Promise<{ url: string }> {

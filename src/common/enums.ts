@@ -1,7 +1,5 @@
 export enum PlatformRole {
-  SUPER_ADMIN = 'SUPER_ADMIN',
-  VALIDATOR = 'VALIDATOR',
-  LEADER = 'LEADER',
+  ADMIN = 'ADMIN',
   USER = 'USER',
 }
 

@@ -50,21 +50,21 @@ describe('members RBAC and participant projection', () => {
     },
   );
 
-  it('lets a platform validator select the organization explicitly', async () => {
+  it('lets an admin select the organization explicitly', async () => {
     const findParticipants = jest.fn().mockResolvedValue([]);
     const controller = new MembersController({
       findParticipants,
     } as unknown as MembersService);
-    const validator: AuthenticatedPrincipal = {
-      userId: 'validator-a',
-      email: 'validator@example.com',
-      platformRole: PlatformRole.VALIDATOR,
+    const admin: AuthenticatedPrincipal = {
+      userId: 'admin-a',
+      email: 'admin@example.com',
+      platformRole: PlatformRole.ADMIN,
       organizationId: null,
       membershipId: null,
       membershipRole: null,
     };
 
-    await controller.findParticipants(validator, 'organization-b');
+    await controller.findParticipants(admin, 'organization-b');
 
     expect(findParticipants).toHaveBeenCalledWith('organization-b');
   });

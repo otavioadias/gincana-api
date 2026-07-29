@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
 import { QueryTypes } from 'sequelize';
-import { Goal, Submission } from '../../database/models';
+import { Goal, Organization, Submission } from '../../database/models';
+import { EntityStatus } from '../../common/enums';
 import { InjectModel } from '@nestjs/sequelize';
+import { GoalsService } from '../goals/goals.service';
 
 interface SummaryRow {
   approvedPoints: string;
@@ -46,6 +48,8 @@ export class DashboardsService {
     private readonly sequelize: Sequelize,
     @InjectModel(Submission) private readonly submissions: typeof Submission,
     @InjectModel(Goal) private readonly goals: typeof Goal,
+    @InjectModel(Organization) private readonly organizations: typeof Organization,
+    private readonly goalsService: GoalsService,
   ) {}
 
   async summary(
@@ -129,9 +133,15 @@ export class DashboardsService {
     );
     const regularity = await this.monthlyRegularity(organizationId, campaignId);
     const goals = await this.goals.findAll({
-      where: { organizationId, ...(campaignId ? { campaignId } : {}) },
+      where: { organizationId: null, ...(campaignId ? { campaignId } : {}) },
       order: [['startsAt', 'DESC']],
     });
+    const goalsWithProgress = await Promise.all(
+      goals.map(async (goal) => ({
+        ...goal.toJSON(),
+        progress: await this.goalsService.progress(organizationId, goal.id),
+      })),
+    );
     const row = rows[0] ?? {
       approvedPoints: '0',
       pendingPoints: '0',
@@ -165,7 +175,7 @@ export class DashboardsService {
       disqualified: regularity.some(
         (month) => month.closed === true && month.regular === false,
       ),
-      goals,
+      goals: goalsWithProgress,
     };
   }
 
@@ -203,7 +213,7 @@ export class DashboardsService {
             'SUBMITTED', 'UNDER_REVIEW', 'NEEDS_CHANGES',
             'APPROVED', 'PARTIALLY_APPROVED'
           )
-        WHERE a.organization_id = :organizationId
+        WHERE a.organization_id IS NULL
           AND (:campaignId::uuid IS NULL OR a.campaign_id = :campaignId::uuid)
         GROUP BY a.id, a.name
         ORDER BY a.name
@@ -234,7 +244,7 @@ export class DashboardsService {
         WITH selected_campaign AS (
           SELECT id, starts_at, ends_at, minimum_actions_per_month
           FROM campaigns
-          WHERE organization_id = :organizationId
+          WHERE organization_id IS NULL
             AND (:campaignId::uuid IS NULL OR id = :campaignId::uuid)
           ORDER BY starts_at DESC
           LIMIT 1
@@ -297,5 +307,36 @@ export class DashboardsService {
       closed: row.closed,
       regular: Number(row.approvedActions) >= Number(row.minimumActions),
     }));
+  }
+
+  async adminTeams(
+    adminUserId: string,
+    campaignId?: string,
+  ): Promise<Record<string, unknown>[]> {
+    const teams = await this.organizations.findAll({
+      where: { status: EntityStatus.ACTIVE },
+      order: [['name', 'ASC']],
+    });
+    return Promise.all(
+      teams.map(async (team) => ({
+        team: { id: team.id, name: team.name, slug: team.slug },
+        ...(await this.summary(team.id, adminUserId, campaignId)),
+      })),
+    );
+  }
+
+  async adminTeam(
+    organizationId: string,
+    adminUserId: string,
+    campaignId?: string,
+  ): Promise<Record<string, unknown>> {
+    const team = await this.organizations.findOne({
+      where: { id: organizationId, status: EntityStatus.ACTIVE },
+    });
+    if (!team) throw new NotFoundException('Team not found');
+    return {
+      team: { id: team.id, name: team.name, slug: team.slug },
+      ...(await this.summary(team.id, adminUserId, campaignId)),
+    };
   }
 }

@@ -46,16 +46,16 @@
         ]
       }
     },
-    "/auth/register-leader": {
+    "/auth/register-manager": {
       "post": {
-        "operationId": "AuthController_registerLeader",
+        "operationId": "AuthController_registerManager",
         "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegisterLeaderDto"
+                "$ref": "#/components/schemas/RegisterManagerDto"
               }
             }
           }
@@ -374,7 +374,7 @@
             "name": "organizationId",
             "required": false,
             "in": "query",
-            "description": "Required only for a platform VALIDATOR without a tenant",
+            "description": "Required only for an ADMIN without a tenant",
             "schema": {
               "type": "string"
             }
@@ -831,6 +831,16 @@
               "example": "2026-09-20",
               "type": "string"
             }
+          },
+          {
+            "name": "organizationId",
+            "required": false,
+            "in": "query",
+            "description": "Required only when an ADMIN checks a specific team",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1170,12 +1180,28 @@
         ]
       }
     },
-    "/validation/submissions": {
+    "/admin/submissions": {
       "get": {
-        "operationId": "PlatformValidationsController_findAll",
+        "operationId": "AdminSubmissionsController_findAll",
         "parameters": [
           {
             "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "organizationId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "campaignId",
             "required": false,
             "in": "query",
             "schema": {
@@ -1204,13 +1230,13 @@
           }
         ],
         "tags": [
-          "platform-validations"
+          "admin-submissions"
         ]
       }
     },
-    "/validation/submissions/{id}": {
+    "/admin/submissions/{id}": {
       "get": {
-        "operationId": "PlatformValidationsController_findOne",
+        "operationId": "AdminSubmissionsController_findOne",
         "parameters": [
           {
             "name": "id",
@@ -1239,13 +1265,13 @@
           }
         ],
         "tags": [
-          "platform-validations"
+          "admin-submissions"
         ]
       }
     },
-    "/validation/submissions/{id}/validate": {
+    "/admin/submissions/{id}/validate": {
       "post": {
-        "operationId": "PlatformValidationsController_validate",
+        "operationId": "AdminSubmissionsController_validate",
         "parameters": [
           {
             "name": "id",
@@ -1284,13 +1310,48 @@
           }
         ],
         "tags": [
-          "platform-validations"
+          "admin-submissions"
         ]
       }
     },
-    "/validation/submissions/{id}/evidences/{evidenceId}/url": {
+    "/admin/submissions/{id}/approve": {
+      "post": {
+        "operationId": "AdminSubmissionsController_approve",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Submission"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin-submissions"
+        ]
+      }
+    },
+    "/admin/submissions/{id}/evidences/{evidenceId}/url": {
       "get": {
-        "operationId": "PlatformValidationsController_evidenceUrl",
+        "operationId": "AdminSubmissionsController_evidenceUrl",
         "parameters": [
           {
             "name": "id",
@@ -1320,7 +1381,7 @@
           }
         ],
         "tags": [
-          "platform-validations"
+          "admin-submissions"
         ]
       }
     },
@@ -1572,6 +1633,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "organizationId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1773,6 +1842,87 @@
         ]
       }
     },
+    "/admin/dashboard/teams": {
+      "get": {
+        "operationId": "AdminDashboardsController_findAll",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdminTeamSummaryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin-dashboard"
+        ]
+      }
+    },
+    "/admin/dashboard/teams/{organizationId}": {
+      "get": {
+        "operationId": "AdminDashboardsController_findOne",
+        "parameters": [
+          {
+            "name": "organizationId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "campaignId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminTeamSummaryDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin-dashboard"
+        ]
+      }
+    },
     "/team-settings": {
       "get": {
         "operationId": "TeamSettingsController_find",
@@ -1939,7 +2089,7 @@
           "password"
         ]
       },
-      "RegisterLeaderDto": {
+      "RegisterManagerDto": {
         "type": "object",
         "properties": {
           "name": {
@@ -2962,6 +3112,83 @@
             "maxLength": 40
           }
         }
+      },
+      "TeamReferenceDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug"
+        ]
+      },
+      "AdminTeamSummaryDto": {
+        "type": "object",
+        "properties": {
+          "team": {
+            "$ref": "#/components/schemas/TeamReferenceDto"
+          },
+          "approvedPoints": {
+            "type": "number"
+          },
+          "pendingPoints": {
+            "type": "number"
+          },
+          "totalPoints": {
+            "type": "number"
+          },
+          "approvedActions": {
+            "type": "number"
+          },
+          "pendingActions": {
+            "type": "number"
+          },
+          "totalActions": {
+            "type": "number"
+          },
+          "activeParticipants": {
+            "type": "number"
+          },
+          "disqualified": {
+            "type": "boolean"
+          },
+          "regularity": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "goals": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "required": [
+          "team",
+          "approvedPoints",
+          "pendingPoints",
+          "totalPoints",
+          "approvedActions",
+          "pendingActions",
+          "totalActions",
+          "activeParticipants",
+          "disqualified",
+          "regularity",
+          "goals"
+        ]
       },
       "TeamProfileDto": {
         "type": "object",

@@ -1,12 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthenticatedPrincipal } from '../../common/auth.types';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
-import { MembershipRole } from '../../common/enums';
+import { MembershipRole, PlatformRole } from '../../common/enums';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
-import { TenantGuard } from '../../common/guards/tenant.guard';
 import {
   ActivityAvailabilityDto,
   ActivityAvailabilityQueryDto,
@@ -17,7 +16,12 @@ import { ActivitiesService } from './activities.service';
 
 @ApiTags('activities')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, TenantGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(
+  PlatformRole.ADMIN,
+  MembershipRole.MANAGER,
+  MembershipRole.MEMBER,
+)
 @Controller('activities')
 export class ActivitiesController {
   constructor(private readonly activities: ActivitiesService) {}
@@ -26,7 +30,7 @@ export class ActivitiesController {
     @Query('campaignId') campaignId?: string,
     @Query('actionDate') actionDate?: string,
   ) {
-    return this.activities.findAll(user.organizationId!, campaignId, actionDate);
+    return this.activities.findAll(user.organizationId, campaignId, actionDate);
   }
   @ApiOkResponse({ type: ActivityAvailabilityDto })
   @Get(':id/availability')
@@ -35,21 +39,25 @@ export class ActivitiesController {
     @Query() query: ActivityAvailabilityQueryDto,
     @CurrentUser() user: AuthenticatedPrincipal,
   ) {
-    return this.activities.availabilityById(user.organizationId!, id, query.actionDate);
+    const teamId = user.organizationId ?? query.organizationId;
+    if (!teamId) {
+      throw new BadRequestException('organizationId is required for an admin');
+    }
+    return this.activities.availabilityById(teamId, id, query.actionDate);
   }
-  @Get(':id') findOne(@Param('id') id: string, @CurrentUser() user: AuthenticatedPrincipal) {
-    return this.activities.findOne(user.organizationId!, id);
+  @Get(':id') findOne(@Param('id') id: string) {
+    return this.activities.findOne(id);
   }
-  @Roles(MembershipRole.MANAGER)
-  @Post() create(@Body() input: CreateActivityDto, @CurrentUser() user: AuthenticatedPrincipal) {
-    return this.activities.create(user.organizationId!, input);
+  @Roles(PlatformRole.ADMIN)
+  @Post() create(@Body() input: CreateActivityDto) {
+    return this.activities.create(input);
   }
-  @Roles(MembershipRole.MANAGER)
-  @Patch(':id') update(@Param('id') id: string, @Body() input: UpdateActivityDto, @CurrentUser() user: AuthenticatedPrincipal) {
-    return this.activities.update(user.organizationId!, id, input);
+  @Roles(PlatformRole.ADMIN)
+  @Patch(':id') update(@Param('id') id: string, @Body() input: UpdateActivityDto) {
+    return this.activities.update(id, input);
   }
-  @Roles(MembershipRole.MANAGER)
-  @Delete(':id') remove(@Param('id') id: string, @CurrentUser() user: AuthenticatedPrincipal) {
-    return this.activities.remove(user.organizationId!, id);
+  @Roles(PlatformRole.ADMIN)
+  @Delete(':id') remove(@Param('id') id: string) {
+    return this.activities.remove(id);
   }
 }

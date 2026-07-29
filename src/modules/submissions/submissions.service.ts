@@ -57,14 +57,16 @@ export class SubmissionsService {
     });
   }
 
-  findAllForValidation(status?: SubmissionStatus): Promise<Submission[]> {
+  findAllForAdmin(
+    status?: SubmissionStatus,
+    organizationId?: string,
+    campaignId?: string,
+  ): Promise<Submission[]> {
     return this.submissions.findAll({
       where: {
-        ...(status ? { status } : {
-          status: {
-            [Op.in]: [SubmissionStatus.SUBMITTED, SubmissionStatus.UNDER_REVIEW],
-          },
-        }),
+        ...(organizationId ? { organizationId } : {}),
+        ...(campaignId ? { campaignId } : {}),
+        ...(status ? { status } : {}),
       },
       include: [
         Organization,
@@ -77,7 +79,7 @@ export class SubmissionsService {
     });
   }
 
-  async findOneForValidation(id: string): Promise<Submission> {
+  async findOneForAdmin(id: string): Promise<Submission> {
     const submission = await this.submissions.findOne({
       where: { id },
       include: [
@@ -127,7 +129,11 @@ export class SubmissionsService {
       return await this.sequelize.transaction(async (transaction) => {
         const actionDate = input.actionDate.slice(0, 10);
         const lockedActivity = await this.activities.findOne({
-          where: { id: activity.id, campaignId: campaign.id, organizationId },
+          where: {
+            id: activity.id,
+            campaignId: campaign.id,
+            organizationId: null,
+          },
           transaction,
           lock: transaction.LOCK.UPDATE,
         });
@@ -200,7 +206,7 @@ export class SubmissionsService {
       await this.sequelize.transaction(async (transaction) => {
         const actionDate = input.actionDate?.slice(0, 10) ?? submission.actionDate;
         const activity = await this.activities.findOne({
-          where: { id: activityId, campaignId, organizationId },
+          where: { id: activityId, campaignId, organizationId: null },
           transaction,
           lock: transaction.LOCK.UPDATE,
         });
@@ -329,7 +335,7 @@ export class SubmissionsService {
 
   async validate(
     id: string,
-    validatorId: string,
+    adminId: string,
     input: ValidateSubmissionDto,
   ): Promise<Submission> {
     const allowed = [
@@ -358,15 +364,15 @@ export class SubmissionsService {
       const activity = await this.activities.findOne({
         where: {
           id: submission.activityId,
-          organizationId: submission.organizationId,
+          organizationId: null,
         },
         transaction,
         lock: transaction.LOCK.UPDATE,
       });
       if (!activity) throw new BadRequestException('Activity not found');
-      if (submission.createdBy === validatorId) {
+      if (submission.createdBy === adminId) {
         if (activity?.rulesJson.allowSelfValidation !== true) {
-          throw new ForbiddenException('A validator cannot validate their own submission');
+          throw new ForbiddenException('An admin cannot approve their own submission');
         }
       }
       if (
@@ -430,7 +436,7 @@ export class SubmissionsService {
       await this.validationEvents.create(
         {
           submissionId: submission.id,
-          validatorId,
+          adminId,
           fromStatus: beforeStatus,
           toStatus: input.status,
           pointsBefore: String(beforePoints),
@@ -442,7 +448,7 @@ export class SubmissionsService {
       await this.audit.record(
         {
           organizationId: submission.organizationId,
-          actorUserId: validatorId,
+          actorUserId: adminId,
           action: 'SUBMISSION_VALIDATED',
           entityType: 'Submission',
           entityId: submission.id,
@@ -465,8 +471,12 @@ export class SubmissionsService {
     activityId: string,
   ): Promise<{ campaign: Campaign; activity: Activity }> {
     const [campaign, activity] = await Promise.all([
-      this.campaigns.findOne({ where: { id: campaignId, organizationId } }),
-      this.activities.findOne({ where: { id: activityId, campaignId, organizationId } }),
+      this.campaigns.findOne({
+        where: { id: campaignId, organizationId: null },
+      }),
+      this.activities.findOne({
+        where: { id: activityId, campaignId, organizationId: null },
+      }),
     ]);
     if (!campaign || !activity) {
       throw new BadRequestException('Campaign and activity must belong to the authenticated organization');

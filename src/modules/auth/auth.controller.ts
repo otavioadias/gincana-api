@@ -12,7 +12,7 @@ import {
   LoginDto,
   LogoutDto,
   RefreshDto,
-  RegisterLeaderDto,
+  RegisterManagerDto,
 } from './auth.dto';
 import { AuthService, TokenPair } from './auth.service';
 
@@ -29,14 +29,14 @@ export class AuthController {
   }
 
   @Throttle({ default: { limit: 3, ttl: 60_000 } })
-  @Post('auth/register-leader')
-  registerLeader(@Body() input: RegisterLeaderDto): Promise<TokenPair> {
-    return this.auth.registerLeader(input);
+  @Post('auth/register-manager')
+  registerManager(@Body() input: RegisterManagerDto): Promise<TokenPair> {
+    return this.auth.registerManager(input);
   }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(PlatformRole.LEADER)
+  @Roles(PlatformRole.USER)
   @Post('teams')
   createTeam(
     @Body() input: CreateOwnTeamDto,

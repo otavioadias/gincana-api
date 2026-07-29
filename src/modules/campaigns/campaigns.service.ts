@@ -8,20 +8,25 @@ import { CreateCampaignDto, UpdateCampaignDto } from './campaigns.dto';
 export class CampaignsService {
   constructor(@InjectModel(Campaign) private readonly campaigns: typeof Campaign) {}
 
-  findAll(organizationId: string): Promise<Campaign[]> {
-    return this.campaigns.findAll({ where: { organizationId }, order: [['startsAt', 'DESC']] });
+  findAll(): Promise<Campaign[]> {
+    return this.campaigns.findAll({
+      where: { organizationId: null },
+      order: [['startsAt', 'DESC']],
+    });
   }
 
-  async findOne(organizationId: string, id: string): Promise<Campaign> {
-    const campaign = await this.campaigns.findOne({ where: { id, organizationId } });
+  async findOne(id: string): Promise<Campaign> {
+    const campaign = await this.campaigns.findOne({
+      where: { id, organizationId: null },
+    });
     if (!campaign) throw new NotFoundException('Campaign not found');
     return campaign;
   }
 
-  create(organizationId: string, input: CreateCampaignDto): Promise<Campaign> {
+  create(input: CreateCampaignDto): Promise<Campaign> {
     this.validateDates(input.startsAt, input.endsAt);
     return this.campaigns.create({
-      organizationId,
+      organizationId: null,
       name: input.name,
       description: input.description ?? null,
       startsAt: input.startsAt.slice(0, 10),
@@ -31,8 +36,8 @@ export class CampaignsService {
     });
   }
 
-  async update(organizationId: string, id: string, input: UpdateCampaignDto): Promise<Campaign> {
-    const campaign = await this.findOne(organizationId, id);
+  async update(id: string, input: UpdateCampaignDto): Promise<Campaign> {
+    const campaign = await this.findOne(id);
     this.validateDates(input.startsAt ?? campaign.startsAt, input.endsAt ?? campaign.endsAt);
     await campaign.update({
       ...input,
@@ -42,8 +47,8 @@ export class CampaignsService {
     return campaign;
   }
 
-  async remove(organizationId: string, id: string): Promise<void> {
-    const campaign = await this.findOne(organizationId, id);
+  async remove(id: string): Promise<void> {
+    const campaign = await this.findOne(id);
     await campaign.update({ status: CampaignStatus.ARCHIVED });
   }
 

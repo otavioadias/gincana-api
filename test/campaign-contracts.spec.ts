@@ -190,7 +190,7 @@ describe('advanced goals', () => {
       } as unknown as Sequelize,
     );
 
-    const goals = await service.createMonthlyPlan('organization-a', {
+    const goals = await service.createMonthlyPlan({
       campaignId: campaign.id,
       titlePrefix: 'Plano mensal',
       targetActions: 3,
@@ -250,7 +250,7 @@ describe('advanced goals', () => {
     );
   });
 
-  it('always scopes goal lookup to the organization', async () => {
+  it('always scopes goal lookup to the shared competition', async () => {
     const findOne = jest.fn().mockResolvedValue(null);
     const service = new GoalsService(
       { findOne } as unknown as typeof Goal,
@@ -258,11 +258,11 @@ describe('advanced goals', () => {
       {} as typeof Activity,
       {} as Sequelize,
     );
-    await expect(service.findOne('organization-a', 'goal-a')).rejects.toThrow(
+    await expect(service.findOne('goal-a')).rejects.toThrow(
       'Goal not found',
     );
     expect(findOne).toHaveBeenCalledWith({
-      where: { id: 'goal-a', organizationId: 'organization-a' },
+      where: { id: 'goal-a', organizationId: null },
     });
   });
 });

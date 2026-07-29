@@ -13,7 +13,7 @@ import { OrganizationsService } from './organizations.service';
 @ApiTags('admin-organizations')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(PlatformRole.SUPER_ADMIN)
+@Roles(PlatformRole.ADMIN)
 @Controller('admin/organizations')
 export class OrganizationsController {
   constructor(private readonly organizations: OrganizationsService) {}

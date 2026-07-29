@@ -121,9 +121,8 @@ export async function seedDemo(sequelize: Sequelize): Promise<void> {
     });
     const passwordHash = await bcrypt.hash(process.env.DEMO_PASSWORD ?? 'ChangeMe123!', 12);
     const users = [
-      ['Super Admin', 'admin@gincana.local', PlatformRole.SUPER_ADMIN, null],
-      ['Manager Demo', 'manager@gincana.local', PlatformRole.LEADER, MembershipRole.MANAGER],
-      ['Validator Demo', 'validator@gincana.local', PlatformRole.VALIDATOR, null],
+      ['Admin', 'admin@gincana.local', PlatformRole.ADMIN, null],
+      ['Manager Demo', 'manager@gincana.local', PlatformRole.USER, MembershipRole.MANAGER],
       ['Member Demo', 'member@gincana.local', PlatformRole.USER, MembershipRole.MEMBER],
     ] as const;
     for (const [name, email, platformRole, role] of users) {
@@ -135,6 +134,7 @@ export async function seedDemo(sequelize: Sequelize): Promise<void> {
         },
         transaction,
       });
+      await user.update({ name, platformRole }, { transaction });
       if (role) {
         await Membership.findOrCreate({
           where: { organizationId: organization.id, userId: user.id },
@@ -147,9 +147,9 @@ export async function seedDemo(sequelize: Sequelize): Promise<void> {
       }
     }
     const [campaign] = await Campaign.findOrCreate({
-      where: { organizationId: organization.id, name: 'Juntos Fazemos Mais 2026' },
+      where: { organizationId: null, name: 'Juntos Fazemos Mais 2026' },
       defaults: {
-        organizationId: organization.id,
+        organizationId: null,
         name: 'Juntos Fazemos Mais 2026',
         description: 'Campanha de demonstração da Gincana Solidária.',
         startsAt: '2026-08-05',
@@ -171,7 +171,7 @@ export async function seedDemo(sequelize: Sequelize): Promise<void> {
     );
     for (const seed of activities) {
       const activityValues = {
-        organizationId: organization.id,
+        organizationId: null,
         campaignId: campaign.id,
         name: seed.name,
         description: null,
@@ -192,7 +192,7 @@ export async function seedDemo(sequelize: Sequelize): Promise<void> {
         status: ActivityStatus.ACTIVE,
       };
       const [activity] = await Activity.findOrCreate({
-        where: { organizationId: organization.id, campaignId: campaign.id, name: seed.name },
+        where: { organizationId: null, campaignId: campaign.id, name: seed.name },
         defaults: activityValues,
         transaction,
       });

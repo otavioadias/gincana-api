@@ -8,5 +8,6 @@ import { GoalsService } from './goals.service';
   imports: [SequelizeModule.forFeature([Goal, Campaign, Activity])],
   controllers: [GoalsController],
   providers: [GoalsService],
+  exports: [GoalsService],
 })
 export class GoalsModule {}

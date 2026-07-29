@@ -42,13 +42,13 @@ describe('tenant and RBAC guards', () => {
     ).toThrow(ForbiddenException);
   });
 
-  it('allows a platform validator role without granting a team tenant', () => {
+  it('allows an admin role without granting a team tenant', () => {
     const reflector = {
-      getAllAndOverride: jest.fn().mockReturnValue([PlatformRole.VALIDATOR]),
+      getAllAndOverride: jest.fn().mockReturnValue([PlatformRole.ADMIN]),
     } as unknown as Reflector;
     const roles = new RolesGuard(reflector);
     const context = contextWithUser({
-      platformRole: PlatformRole.VALIDATOR,
+      platformRole: PlatformRole.ADMIN,
       membershipRole: null,
       organizationId: null,
       membershipId: null,

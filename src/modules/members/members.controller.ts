@@ -33,12 +33,12 @@ export class MembersController {
   @ApiQuery({
     name: 'organizationId',
     required: false,
-    description: 'Required only for a platform VALIDATOR without a tenant',
+    description: 'Required only for an ADMIN without a tenant',
   })
   @Roles(
     MembershipRole.MANAGER,
     MembershipRole.MEMBER,
-    PlatformRole.VALIDATOR,
+    PlatformRole.ADMIN,
   )
   @Get('participants')
   findParticipants(
@@ -47,10 +47,10 @@ export class MembersController {
   ) {
     const scopedOrganizationId =
       user.organizationId ??
-      (user.platformRole === PlatformRole.VALIDATOR ? organizationId : undefined);
+      (user.platformRole === PlatformRole.ADMIN ? organizationId : undefined);
     if (!scopedOrganizationId) {
       throw new BadRequestException(
-        'organizationId is required for a platform validator',
+        'organizationId is required for an admin',
       );
     }
     return this.members.findParticipants(scopedOrganizationId);

@@ -54,7 +54,7 @@ export class OrganizationsService {
           name: input.managerName,
           email: input.managerEmail.toLowerCase(),
           passwordHash,
-          platformRole: PlatformRole.LEADER,
+          platformRole: PlatformRole.USER,
           mustChangePassword: true,
           status: EntityStatus.ACTIVE,
         },

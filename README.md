@@ -40,28 +40,41 @@ Todos os usuários usam a senha definida em `DEMO_PASSWORD` (por padrão,
 
 | Perfil | E-mail |
 | --- | --- |
-| SUPER_ADMIN | `admin@gincana.local` |
+| ADMIN | `admin@gincana.local` |
 | MANAGER | `manager@gincana.local` |
-| VALIDATOR | `validator@gincana.local` |
 | MEMBER | `member@gincana.local` |
 
 A organização semeada usa o slug `gp-cargo-demo`.
 
-## Regras de equipe
+## Papéis e equipes
 
-- O primeiro acesso de líder é criado em `POST /auth/register-leader`, ainda sem
-  vínculo com equipe.
-- Somente uma conta `LEADER` sem membership ativa pode criar sua equipe em
-  `POST /teams`. Quem cria entra automaticamente como `MANAGER` e também pode
-  participar e registrar ações.
-- Líderes adicionam integrantes e podem criar ou promover outros líderes.
-- `VALIDATOR` é perfil de plataforma: não pertence a equipe e usa a fila global
-  `/validation/submissions` para analisar ações de qualquer equipe.
-- `SUPER_ADMIN` também não pertence a equipe; pode criar uma equipe já com seu
-  líder inicial em `/admin/organizations`.
+- Existe um único papel de plataforma: `ADMIN`. Ele administra a gincana,
+  acompanha todas as equipes e revisa suas tarefas.
+- Dentro de cada equipe existem `MANAGER` e `MEMBER`.
+- O primeiro manager pode se registrar em `POST /auth/register-manager` e criar
+  sua equipe em `POST /teams`.
+- Managers adicionam integrantes e podem criar ou promover outros managers para
+  ajudar na gestão. Não há limite de um manager por equipe.
+- O admin também pode criar equipes com seu manager inicial em
+  `POST /admin/organizations`.
 - Login usa somente e-mail e senha; o identificador interno da organização não é
   solicitado na interface.
 - Senhas e senhas temporárias aceitam a partir de 6 caracteres.
+
+## Gincana compartilhada
+
+- Campanhas, modalidades, limites, itens e metas são globais e aparecem
+  igualmente para todas as equipes.
+- Submissões, participantes, disponibilidade, pontuação, regularidade e tema
+  continuam isolados por equipe.
+- O admin acompanha o resumo de todas as equipes em
+  `GET /admin/dashboard/teams` e uma equipe específica em
+  `GET /admin/dashboard/teams/{organizationId}`.
+- O admin lista tarefas de todas as equipes em `GET /admin/submissions`, podendo
+  filtrar por `organizationId`, `campaignId` e `status`.
+- Aprovação direta é feita em `POST /admin/submissions/{id}/approve`.
+  Aprovação parcial, pedido de ajustes e rejeição usam
+  `POST /admin/submissions/{id}/validate`.
 
 ## Comandos
 
@@ -81,15 +94,13 @@ consulta, criação de rascunho e upload.
 
 ## Arquitetura e segurança
 
-- Para participantes e líderes, o tenant é derivado da membership ativa no login
-  e gravado no JWT. Validadores e administradores recebem JWT sem tenant.
-  Nenhum controller aceita `organizationId` de negócio no corpo da requisição.
-- Todo lookup de campanhas, atividades, submissões, evidências, metas e dashboard
-  inclui `organizationId`.
-- A fila global de validação é a exceção explícita: exige `PlatformRole.VALIDATOR`,
-  resolve a equipe pela submissão e não expõe as demais áreas internas.
-- `SUPER_ADMIN` não recebe membership de tenant e, por isso, não passa pelo
-  `TenantGuard` das rotas internas.
+- Para managers e membros, o tenant é derivado da membership ativa no login e
+  gravado no JWT. O admin recebe JWT sem tenant.
+- Campanhas, atividades e metas usam escopo global (`organizationId = null`).
+- Todo lookup de submissões, evidências, membros, disponibilidade, identidade
+  visual e dashboard de equipe inclui `organizationId`.
+- Endpoints administrativos exigem `PlatformRole.ADMIN`; quando operam sobre
+  uma equipe específica, recebem o identificador explicitamente.
 - Senhas usam bcrypt. Refresh tokens são aleatórios, persistidos somente como
   SHA-256 e rotacionados de forma transacional.
 - Aprovação altera pontuação, cria `validation_events` e `audit_logs` na mesma

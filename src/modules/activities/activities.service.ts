@@ -17,7 +17,7 @@ import {
 
 export interface ActivityWithAvailability {
   activity: Activity;
-  availability: ActivityAvailabilityDto;
+  availability: ActivityAvailabilityDto | null;
 }
 
 const APPROVED_STATUSES = [
@@ -59,31 +59,32 @@ export class ActivitiesService {
   ) {}
 
   async findAll(
-    organizationId: string,
+    organizationId: string | null,
     campaignId?: string,
     actionDate = today(),
   ): Promise<ActivityWithAvailability[]> {
     const activities = await this.activities.findAll({
-      where: { organizationId, ...(campaignId ? { campaignId } : {}) },
+      where: { organizationId: null, ...(campaignId ? { campaignId } : {}) },
       include: [ActivityItemType, Campaign],
       order: [['name', 'ASC']],
     });
     return Promise.all(
       activities.map(async (activity) => ({
         activity,
-        availability: await this.availability(organizationId, activity, actionDate),
+        availability: organizationId
+          ? await this.availability(organizationId, activity, actionDate)
+          : null,
       })),
     );
   }
 
   async findOne(
-    organizationId: string,
     id: string,
     transaction?: Transaction,
     lock?: Transaction['LOCK']['UPDATE'],
   ): Promise<Activity> {
     const activity = await this.activities.findOne({
-      where: { id, organizationId },
+      where: { id, organizationId: null },
       include: [ActivityItemType, Campaign],
       transaction,
       ...(lock ? { lock } : {}),
@@ -92,12 +93,12 @@ export class ActivitiesService {
     return activity;
   }
 
-  async create(organizationId: string, input: CreateActivityDto): Promise<Activity> {
-    await this.assertCampaign(organizationId, input.campaignId);
+  async create(input: CreateActivityDto): Promise<Activity> {
+    await this.assertCampaign(input.campaignId);
     return this.sequelize.transaction(async (transaction) => {
       const activity = await this.activities.create(
         {
-          organizationId,
+          organizationId: null,
           campaignId: input.campaignId,
           name: input.name,
           description: input.description ?? null,
@@ -124,17 +125,16 @@ export class ActivitiesService {
         { transaction },
       );
       await this.replaceItems(activity.id, input.itemTypes ?? [], transaction);
-      return this.findOne(organizationId, activity.id, transaction);
+      return this.findOne(activity.id, transaction);
     });
   }
 
   async update(
-    organizationId: string,
     id: string,
     input: UpdateActivityDto,
   ): Promise<Activity> {
-    const activity = await this.findOne(organizationId, id);
-    if (input.campaignId) await this.assertCampaign(organizationId, input.campaignId);
+    const activity = await this.findOne(id);
+    if (input.campaignId) await this.assertCampaign(input.campaignId);
     await this.sequelize.transaction(async (transaction) => {
       await activity.update(
         {
@@ -187,11 +187,11 @@ export class ActivitiesService {
       );
       if (input.itemTypes) await this.replaceItems(id, input.itemTypes, transaction);
     });
-    return this.findOne(organizationId, id);
+    return this.findOne(id);
   }
 
-  async remove(organizationId: string, id: string): Promise<void> {
-    const activity = await this.findOne(organizationId, id);
+  async remove(id: string): Promise<void> {
+    const activity = await this.findOne(id);
     await activity.update({ status: ActivityStatus.INACTIVE });
   }
 
@@ -202,7 +202,7 @@ export class ActivitiesService {
   ): Promise<ActivityAvailabilityDto> {
     return this.availability(
       organizationId,
-      await this.findOne(organizationId, id),
+      await this.findOne(id),
       actionDate,
     );
   }
@@ -217,7 +217,7 @@ export class ActivitiesService {
     const campaign =
       activity.campaign ??
       (await this.campaigns.findOne({
-        where: { id: activity.campaignId, organizationId },
+        where: { id: activity.campaignId, organizationId: null },
         transaction,
       }));
     if (!campaign) throw new BadRequestException('Campaign not found');
@@ -393,12 +393,9 @@ export class ActivitiesService {
     }
   }
 
-  private async assertCampaign(
-    organizationId: string,
-    campaignId: string,
-  ): Promise<void> {
+  private async assertCampaign(campaignId: string): Promise<void> {
     const campaign = await this.campaigns.findOne({
-      where: { id: campaignId, organizationId },
+      where: { id: campaignId, organizationId: null },
     });
     if (!campaign) {
       throw new BadRequestException(

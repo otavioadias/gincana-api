@@ -13,7 +13,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { EntityStatus, MembershipRole, PlatformRole } from '../../common/enums';
 import { AuthenticatedPrincipal } from '../../common/auth.types';
 import { Membership, Organization, RefreshToken, User } from '../../database/models';
-import { CreateOwnTeamDto, LoginDto, RegisterLeaderDto } from './auth.dto';
+import { CreateOwnTeamDto, LoginDto, RegisterManagerDto } from './auth.dto';
 
 export interface TokenPair {
   accessToken: string;
@@ -42,7 +42,7 @@ export class AuthService {
     return this.issuePair(user, membership, input.deviceInfo);
   }
 
-  async registerLeader(input: RegisterLeaderDto): Promise<TokenPair> {
+  async registerManager(input: RegisterManagerDto): Promise<TokenPair> {
     const email = input.email.toLowerCase();
     const existingUser = await this.users.findOne({ where: { email } });
     if (existingUser) throw new ConflictException('Email is already registered');
@@ -56,7 +56,7 @@ export class AuthService {
             input.password,
             this.config.get<number>('BCRYPT_ROUNDS', 12),
           ),
-          platformRole: PlatformRole.LEADER,
+          platformRole: PlatformRole.USER,
           mustChangePassword: false,
           status: EntityStatus.ACTIVE,
         },
@@ -74,15 +74,15 @@ export class AuthService {
     if (
       !user ||
       user.status !== EntityStatus.ACTIVE ||
-      user.platformRole !== PlatformRole.LEADER
+      user.platformRole !== PlatformRole.USER
     ) {
-      throw new UnauthorizedException('Only a leader can create a team');
+      throw new UnauthorizedException('Only a manager without a team can create a team');
     }
     const existingMembership = await this.memberships.findOne({
       where: { userId, status: EntityStatus.ACTIVE },
     });
     if (existingMembership) {
-      throw new ConflictException('Leader already belongs to a team');
+      throw new ConflictException('Manager already belongs to a team');
     }
 
     return this.sequelize.transaction(async (transaction) => {
@@ -158,25 +158,20 @@ export class AuthService {
   async principalFromPayload(payload: AuthenticatedPrincipal): Promise<AuthenticatedPrincipal> {
     const user = await this.users.findByPk(payload.userId);
     if (!user || user.status !== EntityStatus.ACTIVE) throw new UnauthorizedException();
-    if (payload.organizationId) {
-      if (!payload.membershipId) throw new UnauthorizedException('Membership is missing');
-      const membership = await this.memberships.findOne({
-        where: {
-          id: payload.membershipId,
-          userId: payload.userId,
-          organizationId: payload.organizationId,
-          status: EntityStatus.ACTIVE,
-        },
-      });
-      if (!membership) throw new UnauthorizedException('Membership is no longer active');
-    }
-    return payload;
+    const membership = await this.resolveMembership(user);
+    return {
+      userId: user.id,
+      email: user.email,
+      platformRole: user.platformRole,
+      organizationId: membership?.organizationId ?? null,
+      membershipId: membership?.id ?? null,
+      membershipRole: membership?.role ?? null,
+    };
   }
 
   private async resolveMembership(user: User): Promise<Membership | null> {
     if (
-      user.platformRole === PlatformRole.SUPER_ADMIN ||
-      user.platformRole === PlatformRole.VALIDATOR
+      user.platformRole === PlatformRole.ADMIN
     ) {
       return null;
     }
@@ -185,7 +180,7 @@ export class AuthService {
       include: [{ model: Organization, where: { status: EntityStatus.ACTIVE } }],
       order: [['joinedAt', 'ASC']],
     });
-    if (!membership && user.platformRole === PlatformRole.LEADER) return null;
+    if (!membership && user.platformRole === PlatformRole.USER) return null;
     if (!membership) throw new UnauthorizedException('No active organization membership');
     return membership;
   }

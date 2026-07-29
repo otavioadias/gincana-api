@@ -15,7 +15,7 @@ import {
 import { ActivitiesModule } from '../activities/activities.module';
 import { AuditModule } from '../audit/audit.module';
 import { EvidencesModule } from '../evidences/evidences.module';
-import { PlatformValidationsController } from './platform-validations.controller';
+import { AdminSubmissionsController } from './admin-submissions.controller';
 import { SubmissionsController } from './submissions.controller';
 import { SubmissionsService } from './submissions.service';
 
@@ -37,7 +37,7 @@ import { SubmissionsService } from './submissions.service';
     AuditModule,
     EvidencesModule,
   ],
-  controllers: [SubmissionsController, PlatformValidationsController],
+  controllers: [SubmissionsController, AdminSubmissionsController],
   providers: [SubmissionsService],
   exports: [SubmissionsService],
 })

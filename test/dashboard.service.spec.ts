@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize-typescript';
-import { Goal, Submission } from '../src/database/models';
+import { Goal, Organization, Submission } from '../src/database/models';
 import { DashboardsService } from '../src/modules/dashboards/dashboards.service';
+import { GoalsService } from '../src/modules/goals/goals.service';
 
 describe('DashboardsService official scoring', () => {
   it('returns approved totals separately from pending preliminary points', async () => {
@@ -38,7 +39,13 @@ describe('DashboardsService official scoring', () => {
     const sequelize = { query } as unknown as Sequelize;
     const submissions = {} as typeof Submission;
     const goals = { findAll: jest.fn().mockResolvedValue([]) } as unknown as typeof Goal;
-    const service = new DashboardsService(sequelize, submissions, goals);
+    const service = new DashboardsService(
+      sequelize,
+      submissions,
+      goals,
+      {} as typeof Organization,
+      {} as GoalsService,
+    );
     const summary = await service.summary('organization-a', 'user-a');
 
     expect(summary.approvedPoints).toBe(300);
