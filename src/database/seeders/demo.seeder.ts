@@ -159,34 +159,46 @@ export async function seedDemo(sequelize: Sequelize): Promise<void> {
       },
       transaction,
     });
+    await campaign.update(
+      {
+        description: 'Campanha de demonstração da Gincana Solidária.',
+        startsAt: '2026-08-05',
+        endsAt: '2026-12-31',
+        status: CampaignStatus.ACTIVE,
+        minimumActionsPerMonth: 1,
+      },
+      { transaction },
+    );
     for (const seed of activities) {
+      const activityValues = {
+        organizationId: organization.id,
+        campaignId: campaign.id,
+        name: seed.name,
+        description: null,
+        scoringType: seed.scoringType,
+        points: String(seed.points ?? 0),
+        unit: seed.unit ?? null,
+        minimumQuantity: seed.minimumQuantity ? String(seed.minimumQuantity) : null,
+        minimumParticipants: seed.minimumParticipants ?? null,
+        maxOccurrences: seed.maxOccurrences ?? null,
+        maxOccurrencesPerMonth: null,
+        maxOccurrencesPerParticipant: null,
+        maxOccurrencesPerParticipantPerMonth: null,
+        minimumParticipationPercent: seed.minimumParticipationPercent
+          ? String(seed.minimumParticipationPercent) : null,
+        repeatable: seed.repeatable ?? true,
+        evidenceRequired: true,
+        rulesJson: seed.rulesJson ?? {},
+        status: ActivityStatus.ACTIVE,
+      };
       const [activity] = await Activity.findOrCreate({
         where: { organizationId: organization.id, campaignId: campaign.id, name: seed.name },
-        defaults: {
-          organizationId: organization.id,
-          campaignId: campaign.id,
-          name: seed.name,
-          description: null,
-          scoringType: seed.scoringType,
-          points: String(seed.points ?? 0),
-          unit: seed.unit ?? null,
-          minimumQuantity: seed.minimumQuantity ? String(seed.minimumQuantity) : null,
-          minimumParticipants: seed.minimumParticipants ?? null,
-          maxOccurrences: seed.maxOccurrences ?? null,
-          maxOccurrencesPerMonth: null,
-          maxOccurrencesPerParticipant: null,
-          maxOccurrencesPerParticipantPerMonth: null,
-          minimumParticipationPercent: seed.minimumParticipationPercent
-            ? String(seed.minimumParticipationPercent) : null,
-          repeatable: seed.repeatable ?? true,
-          evidenceRequired: true,
-          rulesJson: seed.rulesJson ?? {},
-          status: ActivityStatus.ACTIVE,
-        },
+        defaults: activityValues,
         transaction,
       });
+      await activity.update(activityValues, { transaction });
       for (const [name, points, unit = 'unidade'] of seed.items ?? []) {
-        await ActivityItemType.findOrCreate({
+        const [itemType] = await ActivityItemType.findOrCreate({
           where: { activityId: activity.id, name },
           defaults: {
             activityId: activity.id, name, pointsPerUnit: String(points), unit,
@@ -194,6 +206,14 @@ export async function seedDemo(sequelize: Sequelize): Promise<void> {
           },
           transaction,
         });
+        await itemType.update(
+          {
+            pointsPerUnit: String(points),
+            unit,
+            minimumQuantity: null,
+          },
+          { transaction },
+        );
       }
     }
   });
