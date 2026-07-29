@@ -1,0 +1,66 @@
+@baseUrl = http://localhost:3000
+@accessToken = replace-after-login
+@refreshToken = replace-after-login
+
+### Health
+GET {{baseUrl}}/health
+
+### Login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "member@gincana.local",
+  "password": "ChangeMe123!"
+}
+
+### Refresh with rotation
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}",
+  "deviceInfo": "VS Code REST Client"
+}
+
+### Current session
+GET {{baseUrl}}/me
+Authorization: Bearer {{accessToken}}
+
+### Activities and availability
+GET {{baseUrl}}/activities
+Authorization: Bearer {{accessToken}}
+
+###
+GET {{baseUrl}}/activities/00000000-0000-4000-8000-000000000000/availability?actionDate=2026-09-20
+Authorization: Bearer {{accessToken}}
+
+### Create draft (replace UUIDs)
+POST {{baseUrl}}/submissions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "campaignId": "00000000-0000-4000-8000-000000000000",
+  "activityId": "00000000-0000-4000-8000-000000000000",
+  "actionDate": "2026-09-20",
+  "quantity": 5,
+  "unit": "unidade",
+  "participantIds": []
+}
+
+### Upload evidence
+POST {{baseUrl}}/submissions/00000000-0000-4000-8000-000000000000/evidences
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=GincanaBoundary
+
+--GincanaBoundary
+Content-Disposition: form-data; name="file"; filename="evidence.pdf"
+Content-Type: application/pdf
+
+< ./evidence.pdf
+--GincanaBoundary--
+
+### Dashboard (approved, pending, total and personal progress)
+GET {{baseUrl}}/dashboard/summary
+Authorization: Bearer {{accessToken}}

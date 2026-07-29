@@ -1,0 +1,3015 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "HealthController_health",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/register-leader": {
+      "post": {
+        "operationId": "AuthController_registerLeader",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterLeaderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/teams": {
+      "post": {
+        "operationId": "AuthController_createTeam",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOwnTeamDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogoutDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/me": {
+      "get": {
+        "operationId": "AuthController_me",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/admin/organizations": {
+      "get": {
+        "operationId": "OrganizationsController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Organization"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin-organizations"
+        ]
+      },
+      "post": {
+        "operationId": "OrganizationsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrganizationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Organization"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin-organizations"
+        ]
+      }
+    },
+    "/admin/organizations/{id}": {
+      "get": {
+        "operationId": "OrganizationsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Organization"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin-organizations"
+        ]
+      },
+      "patch": {
+        "operationId": "OrganizationsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrganizationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Organization"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin-organizations"
+        ]
+      },
+      "delete": {
+        "operationId": "OrganizationsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin-organizations"
+        ]
+      }
+    },
+    "/members/participants": {
+      "get": {
+        "operationId": "MembersController_findParticipants",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ParticipantDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "members"
+        ]
+      }
+    },
+    "/members": {
+      "get": {
+        "operationId": "MembersController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "members"
+        ]
+      },
+      "post": {
+        "operationId": "MembersController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Membership"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "members"
+        ]
+      }
+    },
+    "/members/{id}": {
+      "get": {
+        "operationId": "MembersController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Membership"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "members"
+        ]
+      },
+      "patch": {
+        "operationId": "MembersController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Membership"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "members"
+        ]
+      },
+      "delete": {
+        "operationId": "MembersController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "members"
+        ]
+      }
+    },
+    "/campaigns": {
+      "get": {
+        "operationId": "CampaignsController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Campaign"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "campaigns"
+        ]
+      },
+      "post": {
+        "operationId": "CampaignsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCampaignDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Campaign"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "campaigns"
+        ]
+      }
+    },
+    "/campaigns/{id}": {
+      "get": {
+        "operationId": "CampaignsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Campaign"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "campaigns"
+        ]
+      },
+      "patch": {
+        "operationId": "CampaignsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCampaignDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Campaign"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "campaigns"
+        ]
+      },
+      "delete": {
+        "operationId": "CampaignsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "campaigns"
+        ]
+      }
+    },
+    "/activities": {
+      "get": {
+        "operationId": "ActivitiesController_findAll",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "actionDate",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "activities"
+        ]
+      },
+      "post": {
+        "operationId": "ActivitiesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateActivityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Activity"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "activities"
+        ]
+      }
+    },
+    "/activities/{id}/availability": {
+      "get": {
+        "operationId": "ActivitiesController_availability",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "actionDate",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "format": "date",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+              "example": "2026-09-20",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivityAvailabilityDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "activities"
+        ]
+      }
+    },
+    "/activities/{id}": {
+      "get": {
+        "operationId": "ActivitiesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Activity"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "activities"
+        ]
+      },
+      "patch": {
+        "operationId": "ActivitiesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateActivityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Activity"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "activities"
+        ]
+      },
+      "delete": {
+        "operationId": "ActivitiesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "activities"
+        ]
+      }
+    },
+    "/submissions": {
+      "get": {
+        "operationId": "SubmissionsController_findAll",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Submission"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "submissions"
+        ]
+      },
+      "post": {
+        "operationId": "SubmissionsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSubmissionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Submission"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "submissions"
+        ]
+      }
+    },
+    "/submissions/{id}": {
+      "get": {
+        "operationId": "SubmissionsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Submission"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "submissions"
+        ]
+      },
+      "patch": {
+        "operationId": "SubmissionsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSubmissionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Submission"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "submissions"
+        ]
+      },
+      "delete": {
+        "operationId": "SubmissionsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "submissions"
+        ]
+      }
+    },
+    "/submissions/{id}/submit": {
+      "post": {
+        "operationId": "SubmissionsController_submit",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Submission"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "submissions"
+        ]
+      }
+    },
+    "/validation/submissions": {
+      "get": {
+        "operationId": "PlatformValidationsController_findAll",
+        "parameters": [
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Submission"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "platform-validations"
+        ]
+      }
+    },
+    "/validation/submissions/{id}": {
+      "get": {
+        "operationId": "PlatformValidationsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Submission"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "platform-validations"
+        ]
+      }
+    },
+    "/validation/submissions/{id}/validate": {
+      "post": {
+        "operationId": "PlatformValidationsController_validate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateSubmissionDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Submission"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "platform-validations"
+        ]
+      }
+    },
+    "/validation/submissions/{id}/evidences/{evidenceId}/url": {
+      "get": {
+        "operationId": "PlatformValidationsController_evidenceUrl",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "evidenceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "platform-validations"
+        ]
+      }
+    },
+    "/submissions/{submissionId}/evidences": {
+      "post": {
+        "operationId": "EvidencesController_upload",
+        "parameters": [
+          {
+            "name": "submissionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Evidence"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "evidences"
+        ]
+      }
+    },
+    "/submissions/{submissionId}/evidences/{evidenceId}/url": {
+      "get": {
+        "operationId": "EvidencesController_signedUrl",
+        "parameters": [
+          {
+            "name": "submissionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "evidenceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "evidences"
+        ]
+      }
+    },
+    "/submissions/{submissionId}/evidences/{evidenceId}": {
+      "delete": {
+        "operationId": "EvidencesController_remove",
+        "parameters": [
+          {
+            "name": "submissionId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "evidenceId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "evidences"
+        ]
+      }
+    },
+    "/goals": {
+      "get": {
+        "operationId": "GoalsController_findAll",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Goal"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "goals"
+        ]
+      },
+      "post": {
+        "operationId": "GoalsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGoalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Goal"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "goals"
+        ]
+      }
+    },
+    "/goals/monthly-plan": {
+      "post": {
+        "operationId": "GoalsController_createMonthlyPlan",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMonthlyPlanDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Goal"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "goals"
+        ]
+      }
+    },
+    "/goals/{id}/progress": {
+      "get": {
+        "operationId": "GoalsController_progress",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoalProgressDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "goals"
+        ]
+      }
+    },
+    "/goals/{id}": {
+      "get": {
+        "operationId": "GoalsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Goal"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "goals"
+        ]
+      },
+      "patch": {
+        "operationId": "GoalsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGoalDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Goal"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "goals"
+        ]
+      },
+      "delete": {
+        "operationId": "GoalsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "goals"
+        ]
+      }
+    },
+    "/dashboard/summary": {
+      "get": {
+        "operationId": "DashboardsController_summary",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "dashboard"
+        ]
+      }
+    },
+    "/dashboard/by-activity": {
+      "get": {
+        "operationId": "DashboardsController_byActivity",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "dashboard"
+        ]
+      }
+    },
+    "/team-settings": {
+      "get": {
+        "operationId": "TeamSettingsController_find",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "team-settings"
+        ]
+      }
+    },
+    "/team-settings/theme": {
+      "patch": {
+        "operationId": "TeamSettingsController_updateTheme",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTeamThemeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "team-settings"
+        ]
+      }
+    },
+    "/team-settings/logo": {
+      "post": {
+        "operationId": "TeamSettingsController_uploadLogo",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "team-settings"
+        ]
+      },
+      "delete": {
+        "operationId": "TeamSettingsController_removeLogo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "team-settings"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Gincana Solidária API",
+    "description": "Multi-tenant API for solidarity campaigns, submissions and scoring.",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "member@gincana.local"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 128,
+            "example": "ChangeMe123!"
+          },
+          "deviceInfo": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "RegisterLeaderDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 160,
+            "example": "Ana Silva"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "ana@exemplo.com"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 128
+          },
+          "deviceInfo": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "password"
+        ]
+      },
+      "CreateOwnTeamDto": {
+        "type": "object",
+        "properties": {
+          "teamName": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 160,
+            "example": "Equipe Esperança"
+          },
+          "deviceInfo": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "teamName"
+        ]
+      },
+      "RefreshDto": {
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": "string",
+            "minLength": 32
+          },
+          "deviceInfo": {
+            "type": "string",
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "refreshToken"
+        ]
+      },
+      "LogoutDto": {
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": "string",
+            "minLength": 32
+          }
+        },
+        "required": [
+          "refreshToken"
+        ]
+      },
+      "Organization": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateOrganizationDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 100,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "managerName": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "managerEmail": {
+            "type": "string",
+            "format": "email"
+          },
+          "managerTemporaryPassword": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 128
+          },
+          "primaryColor": {
+            "type": "string",
+            "pattern": "^#?([0-9A-F]{3}|[0-9A-F]{4}|[0-9A-F]{6}|[0-9A-F]{8})$"
+          },
+          "secondaryColor": {
+            "type": "string",
+            "pattern": "^#?([0-9A-F]{3}|[0-9A-F]{4}|[0-9A-F]{6}|[0-9A-F]{8})$"
+          }
+        },
+        "required": [
+          "name",
+          "slug",
+          "managerName",
+          "managerEmail",
+          "managerTemporaryPassword"
+        ]
+      },
+      "UpdateOrganizationDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "slug": {
+            "type": "string",
+            "maxLength": 100,
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "managerName": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "managerEmail": {
+            "type": "string",
+            "format": "email"
+          },
+          "managerTemporaryPassword": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 128
+          },
+          "primaryColor": {
+            "type": "string",
+            "pattern": "^#?([0-9A-F]{3}|[0-9A-F]{4}|[0-9A-F]{6}|[0-9A-F]{8})$"
+          },
+          "secondaryColor": {
+            "type": "string",
+            "pattern": "^#?([0-9A-F]{3}|[0-9A-F]{4}|[0-9A-F]{6}|[0-9A-F]{8})$"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE",
+              "SUSPENDED"
+            ]
+          }
+        }
+      },
+      "ParticipantDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Membership identifier"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ACTIVE",
+              "INACTIVE",
+              "SUSPENDED"
+            ],
+            "type": "string",
+            "example": "ACTIVE"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "status"
+        ]
+      },
+      "Membership": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateMemberDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "role": {
+            "enum": [
+              "MANAGER",
+              "MEMBER"
+            ],
+            "type": "string"
+          },
+          "temporaryPassword": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "role",
+          "temporaryPassword"
+        ]
+      },
+      "UpdateMemberDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "role": {
+            "enum": [
+              "MANAGER",
+              "MEMBER"
+            ],
+            "type": "string"
+          },
+          "temporaryPassword": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 128
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE",
+              "INACTIVE",
+              "SUSPENDED"
+            ]
+          }
+        }
+      },
+      "Campaign": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateCampaignDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 180
+          },
+          "description": {
+            "type": "string"
+          },
+          "startsAt": {
+            "type": "string"
+          },
+          "endsAt": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "ACTIVE",
+              "CLOSED",
+              "ARCHIVED"
+            ]
+          },
+          "minimumActionsPerMonth": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "name",
+          "startsAt",
+          "endsAt"
+        ]
+      },
+      "UpdateCampaignDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 180
+          },
+          "description": {
+            "type": "string"
+          },
+          "startsAt": {
+            "type": "string"
+          },
+          "endsAt": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "DRAFT",
+              "ACTIVE",
+              "CLOSED",
+              "ARCHIVED"
+            ],
+            "type": "string"
+          },
+          "minimumActionsPerMonth": {
+            "type": "number",
+            "minimum": 0
+          }
+        }
+      },
+      "ActivityAvailabilityDto": {
+        "type": "object",
+        "properties": {
+          "available": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true,
+            "example": "Maximum reached"
+          },
+          "blockScope": {
+            "nullable": true,
+            "enum": [
+              "CAMPAIGN",
+              "MONTH",
+              "DATE"
+            ],
+            "type": "string"
+          },
+          "blockedUntil": {
+            "type": "string",
+            "nullable": true,
+            "format": "date"
+          },
+          "approvedOccurrences": {
+            "type": "number",
+            "minimum": 0
+          },
+          "approvedOccurrencesThisMonth": {
+            "type": "number",
+            "minimum": 0
+          },
+          "remainingOccurrences": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0
+          },
+          "remainingOccurrencesThisMonth": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "available",
+          "approvedOccurrences",
+          "approvedOccurrencesThisMonth"
+        ]
+      },
+      "Activity": {
+        "type": "object",
+        "properties": {}
+      },
+      "ActivityItemTypeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 120,
+            "example": "casaco"
+          },
+          "pointsPerUnit": {
+            "type": "number",
+            "minimum": 0,
+            "example": 25
+          },
+          "unit": {
+            "type": "string",
+            "maxLength": 40,
+            "example": "unidade"
+          },
+          "minimumQuantity": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "name",
+          "pointsPerUnit",
+          "unit"
+        ]
+      },
+      "CreateActivityDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 180
+          },
+          "description": {
+            "type": "string"
+          },
+          "scoringType": {
+            "enum": [
+              "FIXED",
+              "PER_ITEM",
+              "PER_KG",
+              "PER_MEMBER",
+              "PER_COMPLETE_KIT",
+              "TIERED",
+              "MANUAL"
+            ],
+            "type": "string"
+          },
+          "points": {
+            "type": "number",
+            "minimum": 0
+          },
+          "unit": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "minimumQuantity": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0
+          },
+          "minimumParticipants": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 1
+          },
+          "minimumParticipationPercent": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "maximum": 100
+          },
+          "maxOccurrences": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 1
+          },
+          "maxOccurrencesPerMonth": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 1
+          },
+          "maxOccurrencesPerParticipant": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 1
+          },
+          "maxOccurrencesPerParticipantPerMonth": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 1
+          },
+          "repeatable": {
+            "type": "boolean",
+            "default": true
+          },
+          "evidenceRequired": {
+            "type": "boolean",
+            "default": true
+          },
+          "rulesJson": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "status": {
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "type": "string"
+          },
+          "itemTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActivityItemTypeDto"
+            }
+          }
+        },
+        "required": [
+          "campaignId",
+          "name",
+          "scoringType"
+        ]
+      },
+      "UpdateActivityDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 180
+          },
+          "description": {
+            "type": "string"
+          },
+          "scoringType": {
+            "enum": [
+              "FIXED",
+              "PER_ITEM",
+              "PER_KG",
+              "PER_MEMBER",
+              "PER_COMPLETE_KIT",
+              "TIERED",
+              "MANUAL"
+            ],
+            "type": "string"
+          },
+          "points": {
+            "type": "number",
+            "minimum": 0
+          },
+          "unit": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "minimumQuantity": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0
+          },
+          "minimumParticipants": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 1
+          },
+          "minimumParticipationPercent": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0,
+            "maximum": 100
+          },
+          "maxOccurrences": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 1
+          },
+          "maxOccurrencesPerMonth": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 1
+          },
+          "maxOccurrencesPerParticipant": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 1
+          },
+          "maxOccurrencesPerParticipantPerMonth": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 1
+          },
+          "repeatable": {
+            "type": "boolean",
+            "default": true
+          },
+          "evidenceRequired": {
+            "type": "boolean",
+            "default": true
+          },
+          "rulesJson": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "status": {
+            "enum": [
+              "ACTIVE",
+              "INACTIVE"
+            ],
+            "type": "string"
+          },
+          "itemTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActivityItemTypeDto"
+            }
+          }
+        }
+      },
+      "Submission": {
+        "type": "object",
+        "properties": {}
+      },
+      "SubmissionDetailsDto": {
+        "type": "object",
+        "properties": {
+          "durationMinutes": {
+            "type": "number",
+            "minimum": 0,
+            "example": 60
+          }
+        }
+      },
+      "SubmissionItemDto": {
+        "type": "object",
+        "properties": {
+          "activityItemTypeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 0,
+            "example": 3
+          }
+        },
+        "required": [
+          "activityItemTypeId",
+          "quantity"
+        ]
+      },
+      "CreateSubmissionDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "activityId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "actionDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-09-20"
+          },
+          "institutionName": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "unit": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "details": {
+            "$ref": "#/components/schemas/SubmissionDetailsDto"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SubmissionItemDto"
+            }
+          },
+          "participantIds": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        "required": [
+          "campaignId",
+          "activityId",
+          "actionDate"
+        ]
+      },
+      "UpdateSubmissionDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "activityId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "actionDate": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-09-20"
+          },
+          "institutionName": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "quantity": {
+            "type": "number",
+            "minimum": 0
+          },
+          "unit": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "details": {
+            "$ref": "#/components/schemas/SubmissionDetailsDto"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SubmissionItemDto"
+            }
+          },
+          "participantIds": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      },
+      "ValidateSubmissionDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "APPROVED",
+              "PARTIALLY_APPROVED",
+              "REJECTED",
+              "NEEDS_CHANGES"
+            ]
+          },
+          "approvedPoints": {
+            "type": "number",
+            "minimum": 0
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "Evidence": {
+        "type": "object",
+        "properties": {}
+      },
+      "Goal": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateMonthlyPlanDto": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "activityId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "titlePrefix": {
+            "type": "string",
+            "maxLength": 140,
+            "example": "Plano mensal"
+          },
+          "targetPoints": {
+            "type": "number",
+            "minimum": 0,
+            "default": 0
+          },
+          "targetActions": {
+            "type": "number",
+            "minimum": 0,
+            "default": 0
+          },
+          "targetParticipants": {
+            "type": "number",
+            "minimum": 0,
+            "default": 0
+          },
+          "targetQuantity": {
+            "type": "number",
+            "minimum": 0,
+            "default": 0
+          },
+          "unit": {
+            "type": "string",
+            "maxLength": 40
+          }
+        },
+        "required": [
+          "campaignId",
+          "titlePrefix"
+        ]
+      },
+      "GoalMetricDto": {
+        "type": "object",
+        "properties": {
+          "points": {
+            "type": "number"
+          },
+          "actions": {
+            "type": "number"
+          },
+          "participants": {
+            "type": "number"
+          },
+          "quantity": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "points",
+          "actions",
+          "participants",
+          "quantity"
+        ]
+      },
+      "GoalProgressDto": {
+        "type": "object",
+        "properties": {
+          "achieved": {
+            "$ref": "#/components/schemas/GoalMetricDto"
+          },
+          "targets": {
+            "$ref": "#/components/schemas/GoalMetricDto"
+          },
+          "remaining": {
+            "$ref": "#/components/schemas/GoalMetricDto"
+          },
+          "percentages": {
+            "$ref": "#/components/schemas/GoalMetricDto"
+          },
+          "overallPercentage": {
+            "type": "number"
+          },
+          "status": {
+            "enum": [
+              "NOT_STARTED",
+              "IN_PROGRESS",
+              "ACHIEVED",
+              "EXPIRED"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "achieved",
+          "targets",
+          "remaining",
+          "percentages",
+          "overallPercentage",
+          "status"
+        ]
+      },
+      "CreateGoalDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 180
+          },
+          "description": {
+            "type": "string"
+          },
+          "campaignId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "activityId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid"
+          },
+          "type": {
+            "enum": [
+              "WEEKLY",
+              "MONTHLY",
+              "CAMPAIGN",
+              "CUSTOM"
+            ],
+            "type": "string"
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "targetPoints": {
+            "type": "number",
+            "minimum": 0,
+            "default": 0
+          },
+          "targetActions": {
+            "type": "number",
+            "minimum": 0,
+            "default": 0
+          },
+          "targetParticipants": {
+            "type": "number",
+            "minimum": 0,
+            "default": 0
+          },
+          "targetQuantity": {
+            "type": "number",
+            "minimum": 0,
+            "default": 0
+          },
+          "unit": {
+            "type": "string",
+            "maxLength": 40
+          }
+        },
+        "required": [
+          "title",
+          "campaignId",
+          "type",
+          "startsAt",
+          "endsAt"
+        ]
+      },
+      "UpdateGoalDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 180
+          },
+          "description": {
+            "type": "string"
+          },
+          "campaignId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "activityId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid"
+          },
+          "type": {
+            "enum": [
+              "WEEKLY",
+              "MONTHLY",
+              "CAMPAIGN",
+              "CUSTOM"
+            ],
+            "type": "string"
+          },
+          "startsAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "endsAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "targetPoints": {
+            "type": "number",
+            "minimum": 0,
+            "default": 0
+          },
+          "targetActions": {
+            "type": "number",
+            "minimum": 0,
+            "default": 0
+          },
+          "targetParticipants": {
+            "type": "number",
+            "minimum": 0,
+            "default": 0
+          },
+          "targetQuantity": {
+            "type": "number",
+            "minimum": 0,
+            "default": 0
+          },
+          "unit": {
+            "type": "string",
+            "maxLength": 40
+          }
+        }
+      },
+      "TeamProfileDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "primaryColor": {
+            "type": "string",
+            "example": "#164E63"
+          },
+          "secondaryColor": {
+            "type": "string",
+            "example": "#F59E0B"
+          },
+          "hasLogo": {
+            "type": "boolean"
+          },
+          "logoUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "primaryColor",
+          "secondaryColor",
+          "hasLogo"
+        ]
+      },
+      "UpdateTeamThemeDto": {
+        "type": "object",
+        "properties": {
+          "primaryColor": {
+            "type": "string",
+            "pattern": "^#[0-9A-Fa-f]{6}$",
+            "example": "#164E63"
+          },
+          "secondaryColor": {
+            "type": "string",
+            "pattern": "^#[0-9A-Fa-f]{6}$",
+            "example": "#F59E0B"
+          }
+        },
+        "required": [
+          "primaryColor",
+          "secondaryColor"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+onlyBuiltDependencies:
+  - bcrypt
+  - esbuild
+ignoredBuiltDependencies:
+  - "@scarf/scarf"
+allowBuilds:
+  '@scarf/scarf': false
+  bcrypt: true
+  esbuild: true
