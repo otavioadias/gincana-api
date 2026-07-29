@@ -43,6 +43,7 @@ function available() {
 function activityAvailability(
   counts: number[],
   activity: Partial<Activity>,
+  actionDate = '2026-09-20',
 ): ReturnType<ActivitiesService['availability']> {
   const service = new ActivitiesService(
     {} as typeof Activity,
@@ -59,7 +60,7 @@ function activityAvailability(
       maxOccurrences: null,
       maxOccurrencesPerMonth: null,
       ...activity,
-    } as Activity, '2026-09-20');
+    } as Activity, actionDate);
 }
 
 describe('submission limits and partial approval', () => {
@@ -154,6 +155,15 @@ describe('submission limits and partial approval', () => {
     ).resolves.toMatchObject({
       available: true,
       approvedOccurrences: 12,
+    });
+  });
+
+  it('allows an action before the configured campaign start date', async () => {
+    await expect(
+      activityAvailability([0, 0, 0], {}, '2026-07-29'),
+    ).resolves.toMatchObject({
+      available: true,
+      reason: null,
     });
   });
 

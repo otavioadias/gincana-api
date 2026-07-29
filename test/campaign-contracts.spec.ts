@@ -92,6 +92,17 @@ describe('official modality rules', () => {
     ).toThrow('Exactly one letter per active team member is required');
   });
 
+  it('allows submissions before the configured campaign start date', () => {
+    expect(() =>
+      service.assertSubmissionRules(
+        ruleSubmission({ actionDate: '2026-07-29' }),
+        ruleActivity({}),
+        campaign,
+        3,
+      ),
+    ).not.toThrow();
+  });
+
   it('requires the configured duration and institution', () => {
     expect(() =>
       service.assertSubmissionRules(

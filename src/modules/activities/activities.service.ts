@@ -277,13 +277,13 @@ export class ActivitiesService {
         blockedUntil: campaign.endsAt,
       };
     }
-    if (actionDate < campaign.startsAt || actionDate > campaign.endsAt) {
+    if (actionDate > campaign.endsAt) {
       return {
         ...result,
         available: false,
         reason: 'Action date is outside the campaign period',
         blockScope: AvailabilityBlockScope.CAMPAIGN,
-        blockedUntil: actionDate < campaign.startsAt ? campaign.startsAt : campaign.endsAt,
+        blockedUntil: campaign.endsAt,
       };
     }
     if (sameDate > 0) {

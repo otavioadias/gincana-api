@@ -554,7 +554,7 @@ export class SubmissionsService {
     campaign: Campaign,
     activeMemberCount: number,
   ): void {
-    if (submission.actionDate < campaign.startsAt || submission.actionDate > campaign.endsAt) {
+    if (submission.actionDate > campaign.endsAt) {
       throw new BadRequestException('Action date is outside the campaign period');
     }
     if (activity.minimumQuantity !== null && Number(submission.quantity ?? 0) < Number(activity.minimumQuantity)) {
