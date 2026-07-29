@@ -369,7 +369,17 @@
     "/members/participants": {
       "get": {
         "operationId": "MembersController_findParticipants",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "organizationId",
+            "required": false,
+            "in": "query",
+            "description": "Required only for a platform VALIDATOR without a tenant",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
