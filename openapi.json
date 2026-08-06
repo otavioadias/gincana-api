@@ -1923,6 +1923,91 @@
         ]
       }
     },
+    "/ranking": {
+      "get": {
+        "operationId": "RankingsController_findAll",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RankingEntryDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "ranking"
+        ]
+      }
+    },
+    "/ranking/members": {
+      "get": {
+        "operationId": "RankingsController_findMembers",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "name": "organizationId",
+            "required": false,
+            "in": "query",
+            "description": "Required for admins and ignored when it matches the user team.",
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamMemberRankingDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "ranking"
+        ]
+      }
+    },
     "/team-settings": {
       "get": {
         "operationId": "TeamSettingsController_find",
@@ -3188,6 +3273,115 @@
           "disqualified",
           "regularity",
           "goals"
+        ]
+      },
+      "RankingEntryDto": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "type": "number",
+            "minimum": 1,
+            "example": 1
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Equipe Azul"
+          },
+          "slug": {
+            "type": "string",
+            "example": "equipe-azul"
+          },
+          "photoUrl": {
+            "type": "string",
+            "nullable": true,
+            "description": "Temporary signed URL for the team logo."
+          },
+          "points": {
+            "type": "number",
+            "example": 4685
+          },
+          "lastUpdatedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Most recent team or submission update."
+          }
+        },
+        "required": [
+          "position",
+          "organizationId",
+          "name",
+          "slug",
+          "photoUrl",
+          "points",
+          "lastUpdatedAt"
+        ]
+      },
+      "MemberRankingEntryDto": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "type": "number",
+            "minimum": 1,
+            "example": 1
+          },
+          "membershipId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Ana Silva"
+          },
+          "points": {
+            "type": "number",
+            "example": 1250
+          },
+          "approvedActions": {
+            "type": "number",
+            "example": 4
+          },
+          "lastUpdatedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "description": "Most recent membership or submission update."
+          }
+        },
+        "required": [
+          "position",
+          "membershipId",
+          "userId",
+          "name",
+          "points",
+          "approvedActions",
+          "lastUpdatedAt"
+        ]
+      },
+      "TeamMemberRankingDto": {
+        "type": "object",
+        "properties": {
+          "team": {
+            "$ref": "#/components/schemas/TeamReferenceDto"
+          },
+          "ranking": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MemberRankingEntryDto"
+            }
+          }
+        },
+        "required": [
+          "team",
+          "ranking"
         ]
       },
       "TeamProfileDto": {

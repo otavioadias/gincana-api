@@ -35,8 +35,8 @@ O console do MinIO fica em `http://localhost:9001`.
 
 ## Credenciais de demonstração
 
-Todos os usuários usam a senha definida em `DEMO_PASSWORD` (por padrão,
-`ChangeMe123!`) e entram com `mustChangePassword: true`.
+Todos os usuários criados pelo seed usam a senha definida em `DEMO_PASSWORD`
+(por padrão, `ChangeMe123!`) e entram com `mustChangePassword: true`.
 
 | Perfil | E-mail |
 | --- | --- |
@@ -45,6 +45,19 @@ Todos os usuários usam a senha definida em `DEMO_PASSWORD` (por padrão,
 | MEMBER | `member@gincana.local` |
 
 A organização semeada usa o slug `gp-cargo-demo`.
+
+O seed adiciona três integrantes simulados a cada equipe ativa e inclui quatorze
+atividades por equipe em diferentes etapas do fluxo: rascunho preenchido,
+aguardando correção, enviada, em análise, aprovada, parcialmente aprovada e
+rejeitada. Algumas modalidades se repetem em meses e datas diferentes, com
+quantidades e participantes variados por equipe. Itens, pontuação e histórico
+de validação alimentam as listagens, o ranking, a regularidade e os dashboards.
+O comando pode ser executado novamente sem duplicar esses registros e também
+passa a contemplar equipes criadas posteriormente.
+
+Os integrantes adicionais seguem o padrão
+`ana.<slug>@gincana.local`, `bruno.<slug>@gincana.local` e
+`carla.<slug>@gincana.local`, usando a mesma senha de demonstração.
 
 ## Papéis e equipes
 
@@ -70,6 +83,15 @@ A organização semeada usa o slug `gp-cargo-demo`.
 - O admin acompanha o resumo de todas as equipes em
   `GET /admin/dashboard/teams` e uma equipe específica em
   `GET /admin/dashboard/teams/{organizationId}`.
+- Todo usuário autenticado acessa o ranking geral em `GET /ranking`, que retorna
+  posição, foto, nome, pontuação aprovada e data da última atualização de cada
+  equipe. O parâmetro opcional `campaignId` restringe a pontuação a uma
+  campanha.
+- O ranking individual usa `GET /ranking/members`. Managers e members sempre
+  visualizam apenas integrantes da própria equipe. Para admin, o parâmetro
+  `organizationId` é obrigatório e seleciona a equipe consultada. A pontuação
+  individual pertence ao autor da atividade e considera somente aprovações
+  totais ou parciais.
 - O admin lista tarefas de todas as equipes em `GET /admin/submissions`, podendo
   filtrar por `organizationId`, `campaignId` e `status`.
 - Aprovação direta é feita em `POST /admin/submissions/{id}/approve`.
