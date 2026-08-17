@@ -6,8 +6,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "start": "node dist/main.js",
-    "start:dev": "nest start --watch",
+    "start": "node dist/database/run-setup.js && node dist/main.js",
+    "start:dev": "pnpm db:setup && nest start --watch",
     "lint": "eslint \"{src,test}/**/*.ts\"",
     "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
     "format": "prettier --write \"{src,test}/**/*.ts\" \"*.{json,md,yaml}\"",
@@ -16,8 +16,10 @@
     "db:migrate": "tsx src/database/run-migrations.ts up",
     "db:migrate:down": "tsx src/database/run-migrations.ts down",
     "db:seed": "tsx src/database/run-seed.ts",
+    "db:setup": "tsx src/database/run-setup.ts",
     "db:migrate:prod": "node dist/database/run-migrations.js up",
     "db:seed:prod": "node dist/database/run-seed.js",
+    "db:setup:prod": "node dist/database/run-setup.js",
     "openapi:export": "nest build && node dist/export-openapi.js"
   },
   "dependencies": {

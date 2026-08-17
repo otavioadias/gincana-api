@@ -26,4 +26,4 @@ COPY --from=build /app/package.json ./package.json
 USER node
 EXPOSE 3000
 ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["node", "dist/main.js"]
+CMD ["sh", "-c", "node dist/database/run-setup.js && exec node dist/main.js"]

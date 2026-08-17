@@ -594,7 +594,6 @@ export async function seedDemo(sequelize: Sequelize): Promise<void> {
     });
     const passwordHash = await bcrypt.hash(process.env.DEMO_PASSWORD ?? 'ChangeMe123!', 12);
     const users = [
-      ['Admin', 'admin@gincana.local', PlatformRole.ADMIN, null],
       ['Manager Demo', 'manager@gincana.local', PlatformRole.USER, MembershipRole.MANAGER],
       ['Member Demo', 'member@gincana.local', PlatformRole.USER, MembershipRole.MEMBER],
     ] as const;
@@ -695,8 +694,11 @@ export async function seedDemo(sequelize: Sequelize): Promise<void> {
         );
       }
     }
-    const admin = usersByEmail.get('admin@gincana.local');
-    if (!admin) throw new Error('Seed admin user not found');
+    const admin = await User.findOne({
+      where: { email: 'admin@gincana.local' },
+      transaction,
+    });
+    if (!admin) throw new Error('Seed admin user not found; run the admin seed first');
     const organizations = await Organization.findAll({
       where: { status: EntityStatus.ACTIVE },
       order: [['name', 'ASC']],

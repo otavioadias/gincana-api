@@ -16,10 +16,12 @@ Sequelize, JWT e storage S3 compatível.
 Copy-Item .env.example .env
 docker compose up -d postgres minio
 pnpm install
-pnpm db:migrate
-pnpm db:seed
 pnpm start:dev
 ```
+
+O comando de inicialização aplica automaticamente todas as migrations e, em
+seguida, todos os seeds antes de abrir a API. Para preparar somente o banco,
+sem iniciar o servidor, use `pnpm db:setup`.
 
 A API fica em `http://localhost:3000`. A documentação Swagger fica em
 `http://localhost:3000/docs` e o JSON OpenAPI em
@@ -35,14 +37,17 @@ O console do MinIO fica em `http://localhost:9001`.
 
 ## Credenciais de demonstração
 
-Todos os usuários criados pelo seed usam a senha definida em `DEMO_PASSWORD`
-(por padrão, `ChangeMe123!`) e entram com `mustChangePassword: true`.
+Os usuários de demonstração usam a senha definida em `DEMO_PASSWORD` (por
+padrão, `ChangeMe123!`) e entram com `mustChangePassword: true`. As contas
+administrativas abaixo são mantidas ativas pelo seed e têm acesso geral à
+plataforma:
 
-| Perfil | E-mail |
-| --- | --- |
-| ADMIN | `admin@gincana.local` |
-| MANAGER | `manager@gincana.local` |
-| MEMBER | `member@gincana.local` |
+| Perfil | E-mail | Senha padrão |
+| --- | --- | --- |
+| ADMIN | `admin@gincana.local` | `ADMIN_PASSWORD` ou `DEMO_PASSWORD` |
+| ADMIN | `afigueiredo@gpcargo.com.br` | `FIGUEIREDO_PASSWORD` ou `figueiredo123` |
+| MANAGER | `manager@gincana.local` | `DEMO_PASSWORD` |
+| MEMBER | `member@gincana.local` | `DEMO_PASSWORD` |
 
 A organização semeada usa o slug `gp-cargo-demo`.
 
@@ -108,6 +113,7 @@ pnpm build
 pnpm db:migrate
 pnpm db:migrate:down
 pnpm db:seed
+pnpm db:setup
 pnpm openapi:export
 ```
 
@@ -165,13 +171,15 @@ docker run --env-file .env -p 3000:3000 gincana-api
 ```
 
 Em produção, use PostgreSQL gerenciado, bucket privado externo, segredos fortes e
-TLS. Execute migrations como etapa separada do deploy antes de trocar o tráfego.
+TLS. A imagem executa `db:setup:prod` antes de iniciar a API, aplicando migrations
+pendentes e todos os seeds de maneira idempotente.
 
 Na imagem compilada, os comandos correspondentes são:
 
 ```powershell
 pnpm db:migrate:prod
 pnpm db:seed:prod
+pnpm db:setup:prod
 ```
 
 ## Observações de produto
