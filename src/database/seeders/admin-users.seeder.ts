@@ -24,6 +24,16 @@ function adminUsers(): AdminUserSeed[] {
       email: 'afigueiredo@gpcargo.com.br',
       password: process.env.FIGUEIREDO_PASSWORD ?? 'figueiredo123',
     },
+    {
+      name: 'Eduardo Augusto',
+      email: 'eaugusto@gpcargo.com.br',
+      password: process.env.EAUGUSTO_PASSWORD ?? 'eduardo123',
+    },
+    {
+      name: 'I. Armond',
+      email: 'iarmond@gpcargo.com.br',
+      password: process.env.IARMOND_PASSWORD ?? 'armond123',
+    },
   ];
 }
 

@@ -13,7 +13,7 @@ describe('Admin user seeds', () => {
     else process.env.BCRYPT_ROUNDS = previousRounds;
   });
 
-  it('upserts the general admin and Figueiredo with full platform access', async () => {
+  it('upserts every configured admin with full platform access', async () => {
     process.env.BCRYPT_ROUNDS = '4';
     const transaction = {};
     const update = jest.fn().mockResolvedValue(undefined);
@@ -28,7 +28,7 @@ describe('Admin user seeds', () => {
 
     await seedAdminUsers(sequelize);
 
-    expect(findOrCreate).toHaveBeenCalledTimes(2);
+    expect(findOrCreate).toHaveBeenCalledTimes(4);
     const generalAdminSeed = findOrCreate.mock.calls[0][0] as unknown as {
       where: { email: string };
       defaults: { platformRole: PlatformRole; status: EntityStatus };
@@ -43,6 +43,14 @@ describe('Admin user seeds', () => {
         status: EntityStatus;
       };
       transaction: object;
+    };
+    const eduardoSeed = findOrCreate.mock.calls[2][0] as unknown as {
+      where: { email: string };
+      defaults: { passwordHash: string; platformRole: PlatformRole };
+    };
+    const armondSeed = findOrCreate.mock.calls[3][0] as unknown as {
+      where: { email: string };
+      defaults: { passwordHash: string; platformRole: PlatformRole };
     };
     expect(generalAdminSeed).toMatchObject({
       where: { email: 'admin@gincana.local' },
@@ -64,6 +72,20 @@ describe('Admin user seeds', () => {
     await expect(
       bcrypt.compare('figueiredo123', figueiredoSeed.defaults.passwordHash),
     ).resolves.toBe(true);
-    expect(update).toHaveBeenCalledTimes(2);
+    expect(eduardoSeed).toMatchObject({
+      where: { email: 'eaugusto@gpcargo.com.br' },
+      defaults: { platformRole: PlatformRole.ADMIN },
+    });
+    await expect(
+      bcrypt.compare('eduardo123', eduardoSeed.defaults.passwordHash),
+    ).resolves.toBe(true);
+    expect(armondSeed).toMatchObject({
+      where: { email: 'iarmond@gpcargo.com.br' },
+      defaults: { platformRole: PlatformRole.ADMIN },
+    });
+    await expect(
+      bcrypt.compare('armond123', armondSeed.defaults.passwordHash),
+    ).resolves.toBe(true);
+    expect(update).toHaveBeenCalledTimes(4);
   });
 });

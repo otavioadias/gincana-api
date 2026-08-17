@@ -46,6 +46,8 @@ plataforma:
 | --- | --- | --- |
 | ADMIN | `admin@gincana.local` | `ADMIN_PASSWORD` ou `DEMO_PASSWORD` |
 | ADMIN | `afigueiredo@gpcargo.com.br` | `FIGUEIREDO_PASSWORD` ou `figueiredo123` |
+| ADMIN | `eaugusto@gpcargo.com.br` | `EAUGUSTO_PASSWORD` ou `eduardo123` |
+| ADMIN | `iarmond@gpcargo.com.br` | `IARMOND_PASSWORD` ou `armond123` |
 | MANAGER | `manager@gincana.local` | `DEMO_PASSWORD` |
 | MEMBER | `member@gincana.local` | `DEMO_PASSWORD` |
 
